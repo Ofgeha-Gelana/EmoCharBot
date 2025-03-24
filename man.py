@@ -152,112 +152,6 @@ def render_chat_interface():
             except Exception as e:
                 st.error(f"Error generating response: {e}")
 
-# def main():
-#     """Main app controller with conversation continuity"""
-#     # Initialize session state
-#     if "characters" not in st.session_state:
-#         st.session_state.characters = []
-#     if "active_chats" not in st.session_state:
-#         st.session_state.active_chats = {}  # {character_name: [messages]}
-#     if "current_character" not in st.session_state:
-#         st.session_state.current_character = None
-
-#     # Sidebar - Character Management
-#     with st.sidebar:
-#         st.header("Character Manager")
-        
-#         # File upload and character extraction (keep your existing code)
-#         setup_sidebar()
-        
-#         # Character selection dropdown
-#         if st.session_state.characters:
-#             character_names = [char.name for char in st.session_state.characters]
-#             selected_char = st.selectbox(
-#                 "Switch Character",
-#                 character_names,
-#                 index=character_names.index(st.session_state.current_character.name) 
-#                 if st.session_state.current_character else 0
-#             )
-            
-#             if st.button("Switch to Character"):
-#                 st.session_state.current_character = next(
-#                     char for char in st.session_state.characters 
-#                     if char.name == selected_char
-#                 )
-#                 st.rerun()
-
-#             st.divider()
-#             st.write("Available Characters:")
-#             for char in st.session_state.characters:
-#                 st.write(f"- {char.name}")
-
-#     # Main Chat Area
-#     st.title("Multi-Character Chat")
-    
-#     if not st.session_state.characters:
-#         st.info("👈 Upload a book or paste text to extract characters")
-#         return
-
-#     if not st.session_state.current_character:
-#         st.session_state.current_character = st.session_state.characters[0]
-#         st.rerun()
-
-#     # Display current character info
-#     char = st.session_state.current_character
-#     st.subheader(f"Chatting with {char.name}")
-#     st.caption(f"Personality: {', '.join(char.traits)}")
-    
-#     # Initialize chat history for this character if needed
-#     if char.name not in st.session_state.active_chats:
-#         st.session_state.active_chats[char.name] = [
-#             {"role": "assistant", "content": f"Hello! I'm {char.name}. How can I help you?"}
-#         ]
-
-#     # Display chat history
-#     for msg in st.session_state.active_chats[char.name]:
-#         st.chat_message(msg["role"]).write(msg["content"])
-
-#     # Handle user input
-#     if prompt := st.chat_input(f"Message {char.name}..."):
-#         # Add user message to history
-#         st.session_state.active_chats[char.name].append(
-#             {"role": "user", "content": prompt}
-#         )
-#         st.chat_message("user").write(prompt)
-        
-#         # Generate character response
-#         with st.spinner(f"{char.name} is thinking..."):
-#             try:
-#                 context = f"""
-#                 You are {char.name}, {char.description}.
-#                 Personality: {', '.join(char.traits)}.
-#                 Continue this conversation naturally:
-#                 """
-                
-#                 # Get conversation history
-#                 history = "\n".join(
-#                     f"{msg['role']}: {msg['content']}" 
-#                     for msg in st.session_state.active_chats[char.name]
-#                 )
-                
-#                 response = model.generate_content([context, history])
-#                 assistant_msg = response.text
-                
-#                 st.session_state.active_chats[char.name].append(
-#                     {"role": "assistant", "content": assistant_msg}
-#                 )
-#                 st.chat_message("assistant").write(assistant_msg)
-                
-#             except Exception as e:
-#                 st.error(f"Error generating response: {str(e)}")
-
-
-
-# if __name__ == "__main__":
-#     main()
-
-
-# ... (keep all previous imports and setup code)
 
 def main():
     """Main app controller with user-specific conversation tracking"""
@@ -388,3 +282,4 @@ def format_other_conversations(char_name):
 
 if __name__ == "__main__":
     main()
+
