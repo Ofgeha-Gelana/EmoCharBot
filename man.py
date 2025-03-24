@@ -1,141 +1,3 @@
-# import os
-# import streamlit as st
-# from dotenv import load_dotenv
-# import google.generativeai as gen_ai
-# from lib.character import Character, PsiEmotionModel
-# from lib.file_processor import extract_text_from_uploaded_file
-# from lib.memory import MemorySystem
-
-# # Load environment and configuration
-# load_dotenv()
-
-# # Configure Gemini-Pro
-# GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-# gen_ai.configure(api_key=GOOGLE_API_KEY)
-# model = gen_ai.GenerativeModel('gemini-1.5-flash')
-
-# # UI Configuration
-# st.set_page_config(page_title="AI Character Simulator", page_icon=":brain:", layout="wide")
-
-# # Initialize session state
-# if "characters" not in st.session_state:
-#     st.session_state.characters = []
-# if "selected_character" not in st.session_state:
-#     st.session_state.selected_character = None
-# if "chat_history" not in st.session_state:
-#     st.session_state.chat_history = []
-
-# def setup_sidebar():
-#     """Configure the sidebar UI"""
-#     st.header("Character Setup")
-    
-#     # Text input or upload for book
-#     input_method = st.radio("Input method:", ("Paste text", "Upload file"))
-    
-#     book_text = ""
-#     if input_method == "Paste text":
-#         book_text = st.text_area("Paste book text:", height=200)
-#     else:
-#         uploaded_file = st.file_uploader("Upload book/text file:", type=["txt", "pdf"])
-#         if uploaded_file:
-#             book_text = extract_text_from_uploaded_file(uploaded_file)
-#             if book_text:
-#                 st.success("File successfully loaded!")
-    
-#     if st.button("Extract Characters") and book_text:
-#         with st.spinner("Analyzing text for characters..."):
-#             # This would call your character extraction logic
-#             # For now we'll mock it
-#             st.session_state.characters = [
-#                 Character("Example", "Sample character", ["kind", "wise"])
-#             ]
-    
-#     if st.session_state.characters:
-#         character_names = [char.name for char in st.session_state.characters]
-#         selected = st.selectbox("Select a character:", character_names)
-#         st.session_state.selected_character = next(
-#             char for char in st.session_state.characters if char.name == selected
-#         )
-        
-#         # Display character info
-#         if st.session_state.selected_character:
-#             char = st.session_state.selected_character
-#             st.subheader("Character Info")
-#             st.markdown(f"**Name:** {char.name}")
-#             st.markdown(f"**Description:** {char.description}")
-#             st.markdown("**Traits:** " + ", ".join(char.traits))
-
-# def render_chat_interface():
-#     """Render the main chat interface"""
-#     char = st.session_state.selected_character
-    
-#     st.header(f"Chatting with {char.name}")
-#     st.caption(f"{char.description}")
-    
-#     # Display chat history
-#     for msg in st.session_state.chat_history:
-#         role = "assistant" if msg["role"] == "character" else "user"
-#         with st.chat_message(role):
-#             st.markdown(msg["content"])
-    
-#     # User input
-#     user_input = st.chat_input(f"Talk to {char.name}...")
-#     if user_input:
-#         # Add user message to history
-#         st.session_state.chat_history.append({
-#             "role": "user",
-#             "content": user_input
-#         })
-        
-#         # Display user message
-#         with st.chat_message("user"):
-#             st.markdown(user_input)
-        
-#         # Generate character response
-#         try:
-#             with st.spinner(f"{char.name} is thinking..."):
-#                 response = model.generate_content(f"Respond as {char.name}: {user_input}")
-#                 char_response = response.text
-            
-#             # Add to chat history
-#             st.session_state.chat_history.append({
-#                 "role": "character",
-#                 "content": char_response
-#             })
-            
-#             # Display character response
-#             with st.chat_message("assistant"):
-#                 st.markdown(char_response)
-            
-#         except Exception as e:
-#             st.error(f"Error generating response: {e}")
-
-# def render_welcome_screen():
-#     """Show welcome screen when no character is selected"""
-#     st.info("Please upload or paste text and extract characters to begin chatting.")
-#     st.image("https://via.placeholder.com/600x300?text=Upload+a+book+or+paste+text+to+start", 
-#              use_column_width=True)
-
-# # Main app interface
-# def main():
-#     st.title("📚 AI Character Simulator")
-    
-#     # Sidebar setup
-#     with st.sidebar:
-#         setup_sidebar()
-    
-#     # Main content area
-#     if st.session_state.selected_character:
-#         render_chat_interface()
-#     else:
-#         render_welcome_screen()
-
-# if __name__ == "__main__":
-#     main()
-
-
-
-
 
 
 
@@ -291,63 +153,149 @@ def render_chat_interface():
                 st.error(f"Error generating response: {e}")
 
 # def main():
-#     """Main app controller"""
+#     """Main app controller with conversation continuity"""
 #     # Initialize session state
 #     if "characters" not in st.session_state:
 #         st.session_state.characters = []
-#     if "selected_character" not in st.session_state:
-#         st.session_state.selected_character = None
-#     if "chat_started" not in st.session_state:
-#         st.session_state.chat_started = False
-    
-#     # Sidebar - always visible
+#     if "active_chats" not in st.session_state:
+#         st.session_state.active_chats = {}  # {character_name: [messages]}
+#     if "current_character" not in st.session_state:
+#         st.session_state.current_character = None
+
+#     # Sidebar - Character Management
 #     with st.sidebar:
+#         st.header("Character Manager")
+        
+#         # File upload and character extraction (keep your existing code)
 #         setup_sidebar()
-#         if st.session_state.characters and not st.session_state.chat_started:
-#             render_character_selection()
+        
+#         # Character selection dropdown
+#         if st.session_state.characters:
+#             character_names = [char.name for char in st.session_state.characters]
+#             selected_char = st.selectbox(
+#                 "Switch Character",
+#                 character_names,
+#                 index=character_names.index(st.session_state.current_character.name) 
+#                 if st.session_state.current_character else 0
+#             )
+            
+#             if st.button("Switch to Character"):
+#                 st.session_state.current_character = next(
+#                     char for char in st.session_state.characters 
+#                     if char.name == selected_char
+#                 )
+#                 st.rerun()
+
+#             st.divider()
+#             st.write("Available Characters:")
+#             for char in st.session_state.characters:
+#                 st.write(f"- {char.name}")
+
+#     # Main Chat Area
+#     st.title("Multi-Character Chat")
     
-#     # Main content area
-#     if st.session_state.chat_started and st.session_state.selected_character:
-#         render_chat_interface()
-#     else:
-#         st.info("👈 Upload a book or paste text to begin")
-#         st.image("https://via.placeholder.com/600x300?text=Upload+text+or+PDF+to+start", 
-#                 use_column_width=True)
+#     if not st.session_state.characters:
+#         st.info("👈 Upload a book or paste text to extract characters")
+#         return
+
+#     if not st.session_state.current_character:
+#         st.session_state.current_character = st.session_state.characters[0]
+#         st.rerun()
+
+#     # Display current character info
+#     char = st.session_state.current_character
+#     st.subheader(f"Chatting with {char.name}")
+#     st.caption(f"Personality: {', '.join(char.traits)}")
+    
+#     # Initialize chat history for this character if needed
+#     if char.name not in st.session_state.active_chats:
+#         st.session_state.active_chats[char.name] = [
+#             {"role": "assistant", "content": f"Hello! I'm {char.name}. How can I help you?"}
+#         ]
+
+#     # Display chat history
+#     for msg in st.session_state.active_chats[char.name]:
+#         st.chat_message(msg["role"]).write(msg["content"])
+
+#     # Handle user input
+#     if prompt := st.chat_input(f"Message {char.name}..."):
+#         # Add user message to history
+#         st.session_state.active_chats[char.name].append(
+#             {"role": "user", "content": prompt}
+#         )
+#         st.chat_message("user").write(prompt)
+        
+#         # Generate character response
+#         with st.spinner(f"{char.name} is thinking..."):
+#             try:
+#                 context = f"""
+#                 You are {char.name}, {char.description}.
+#                 Personality: {', '.join(char.traits)}.
+#                 Continue this conversation naturally:
+#                 """
+                
+#                 # Get conversation history
+#                 history = "\n".join(
+#                     f"{msg['role']}: {msg['content']}" 
+#                     for msg in st.session_state.active_chats[char.name]
+#                 )
+                
+#                 response = model.generate_content([context, history])
+#                 assistant_msg = response.text
+                
+#                 st.session_state.active_chats[char.name].append(
+#                     {"role": "assistant", "content": assistant_msg}
+#                 )
+#                 st.chat_message("assistant").write(assistant_msg)
+                
+#             except Exception as e:
+#                 st.error(f"Error generating response: {str(e)}")
+
+
 
 # if __name__ == "__main__":
 #     main()
 
 
-# ... (keep previous imports and setup code)
+# ... (keep all previous imports and setup code)
 
 def main():
-    """Main app controller with conversation continuity"""
+    """Main app controller with user-specific conversation tracking"""
     # Initialize session state
     if "characters" not in st.session_state:
         st.session_state.characters = []
-    if "active_chats" not in st.session_state:
-        st.session_state.active_chats = {}  # {character_name: [messages]}
+    if "all_conversations" not in st.session_state:
+        st.session_state.all_conversations = {}  # Format: {character_name: {user: [messages]}}
     if "current_character" not in st.session_state:
         st.session_state.current_character = None
+    if "current_user" not in st.session_state:
+        st.session_state.current_user = "Ofgeha"  # Default user
 
-    # Sidebar - Character Management
+    # User management in sidebar
     with st.sidebar:
-        st.header("Character Manager")
+        st.header("User & Character Management")
         
-        # File upload and character extraction (keep your existing code)
+        # User selection
+        st.session_state.current_user = st.text_input(
+            "Your Name", 
+            value=st.session_state.current_user,
+            help="Enter your name to continue or start a new conversation"
+        )
+        
+        # File upload and character extraction
         setup_sidebar()
         
-        # Character selection dropdown
+        # Character selection
         if st.session_state.characters:
             character_names = [char.name for char in st.session_state.characters]
             selected_char = st.selectbox(
-                "Switch Character",
+                "Select Character",
                 character_names,
                 index=character_names.index(st.session_state.current_character.name) 
                 if st.session_state.current_character else 0
             )
             
-            if st.button("Switch to Character"):
+            if st.button("Switch Character"):
                 st.session_state.current_character = next(
                     char for char in st.session_state.characters 
                     if char.name == selected_char
@@ -360,7 +308,7 @@ def main():
                 st.write(f"- {char.name}")
 
     # Main Chat Area
-    st.title("Multi-Character Chat")
+    st.title(f"💬 {st.session_state.current_user}'s Conversation")
     
     if not st.session_state.characters:
         st.info("👈 Upload a book or paste text to extract characters")
@@ -370,56 +318,73 @@ def main():
         st.session_state.current_character = st.session_state.characters[0]
         st.rerun()
 
-    # Display current character info
-    char = st.session_state.current_character
-    st.subheader(f"Chatting with {char.name}")
-    st.caption(f"Personality: {', '.join(char.traits)}")
+    # Initialize conversation tracking
+    char_name = st.session_state.current_character.name
+    if char_name not in st.session_state.all_conversations:
+        st.session_state.all_conversations[char_name] = {}
     
-    # Initialize chat history for this character if needed
-    if char.name not in st.session_state.active_chats:
-        st.session_state.active_chats[char.name] = [
-            {"role": "assistant", "content": f"Hello! I'm {char.name}. How can I help you?"}
+    # Get or create conversation for current user
+    if st.session_state.current_user not in st.session_state.all_conversations[char_name]:
+        st.session_state.all_conversations[char_name][st.session_state.current_user] = [
+            {"role": "assistant", "content": f"Hello {st.session_state.current_user}! I'm {char_name}. How can I help you?"}
         ]
 
-    # Display chat history
-    for msg in st.session_state.active_chats[char.name]:
+    # Display conversation history
+    messages = st.session_state.all_conversations[char_name][st.session_state.current_user]
+    for msg in messages:
         st.chat_message(msg["role"]).write(msg["content"])
 
     # Handle user input
-    if prompt := st.chat_input(f"Message {char.name}..."):
+    if prompt := st.chat_input(f"Message {char_name}..."):
         # Add user message to history
-        st.session_state.active_chats[char.name].append(
-            {"role": "user", "content": prompt}
-        )
-        st.chat_message("user").write(prompt)
+        messages.append({"role": "user", "content": prompt, "user": st.session_state.current_user})
+        st.chat_message("user").write(f"{st.session_state.current_user}: {prompt}")
         
         # Generate character response
-        with st.spinner(f"{char.name} is thinking..."):
+        with st.spinner(f"{char_name} is thinking..."):
             try:
+                char = st.session_state.current_character
+                
+                # Build context with character info and full conversation history
                 context = f"""
                 You are {char.name}, {char.description}.
-                Personality: {', '.join(char.traits)}.
-                Continue this conversation naturally:
+                Personality traits: {', '.join(char.traits)}.
+                
+                Current conversation with {st.session_state.current_user}:
+                {format_conversation_history(messages)}
+                
+                Previous conversations with others:
+                {format_other_conversations(char_name)}
+                
+                Respond naturally in character, remembering you've spoken with others before.
                 """
                 
-                # Get conversation history
-                history = "\n".join(
-                    f"{msg['role']}: {msg['content']}" 
-                    for msg in st.session_state.active_chats[char.name]
-                )
-                
-                response = model.generate_content([context, history])
+                response = model.generate_content(context)
                 assistant_msg = response.text
                 
-                st.session_state.active_chats[char.name].append(
-                    {"role": "assistant", "content": assistant_msg}
-                )
+                messages.append({"role": "assistant", "content": assistant_msg})
                 st.chat_message("assistant").write(assistant_msg)
                 
             except Exception as e:
                 st.error(f"Error generating response: {str(e)}")
 
+def format_conversation_history(messages):
+    """Format current conversation history"""
+    return "\n".join(
+        f"{msg.get('user', 'User')}: {msg['content']}" 
+        for msg in messages 
+        if msg['role'] != "system"
+    )
 
+def format_other_conversations(char_name):
+    """Format conversations with other users"""
+    other_convos = []
+    for user, messages in st.session_state.all_conversations[char_name].items():
+        if user != st.session_state.current_user:
+            convo = f"\nConversation with {user}:\n"
+            convo += "\n".join(f"{msg['role']}: {msg['content']}" for msg in messages[-3:])  # Show last 3 messages
+            other_convos.append(convo)
+    return "\n".join(other_convos) if other_convos else "No previous conversations with others"
 
 if __name__ == "__main__":
     main()
