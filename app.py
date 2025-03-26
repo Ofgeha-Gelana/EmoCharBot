@@ -15,9 +15,6 @@ GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 gen_ai.configure(api_key=GOOGLE_API_KEY)
 model = gen_ai.GenerativeModel('gemini-1.5-flash')
 
-# Initialize UI
-setup_page()
-
 def extract_characters(text: str) -> list[Character]:
     """Extract characters from text using Gemini with robust JSON handling"""
     if not text.strip():
@@ -72,6 +69,9 @@ def extract_characters(text: str) -> list[Character]:
 
 def main():
     """Main application logic"""
+    # Initialize UI
+    setup_page()
+    
     # Initialize session state
     if "characters" not in st.session_state:
         st.session_state.characters = []
@@ -82,8 +82,10 @@ def main():
     if "current_user" not in st.session_state:
         st.session_state.current_user = "Ofgeha"
 
-    # Create sidebar UI
-    create_sidebar(st.session_state.characters, st.session_state.current_character)
+    # Create sidebar UI - pass the extract_characters function
+    create_sidebar(st.session_state.characters, 
+                  st.session_state.current_character,
+                  extract_characters)
 
     # Main content area
     if not st.session_state.characters:

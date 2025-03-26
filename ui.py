@@ -1,5 +1,7 @@
 import streamlit as st
 from lib.character import Character
+from lib.file_processor import extract_text_from_uploaded_file
+from .app import extract_characters  # Import from main
 
 def setup_page():
     """Configure the page with professional styling"""
@@ -26,7 +28,7 @@ def setup_page():
     </style>
     """, unsafe_allow_html=True)
 
-def create_sidebar(characters: list[Character], current_character: Character):
+def create_sidebar(characters: list[Character], current_character: Character, extract_characters_fn):
     """Create the professional sidebar UI"""
     with st.sidebar:
         st.image("https://via.placeholder.com/300x80?text=Character+Chat", use_column_width=True)
@@ -65,9 +67,9 @@ def create_sidebar(characters: list[Character], current_character: Character):
         
         # File upload section
         with st.expander("📚 Upload Source", expanded=True):
-            setup_file_upload()
+            setup_file_upload(extract_characters_fn)
 
-def setup_file_upload():
+def setup_file_upload(extract_characters_fn):
     """File upload UI component"""
     input_method = st.radio("Input method:", ("Paste text", "Upload file"), horizontal=True)
     
@@ -84,7 +86,7 @@ def setup_file_upload():
     
     if st.button("Extract Characters", use_container_width=True) and book_text:
         with st.spinner("Analyzing content..."):
-            st.session_state.characters = extract_characters(book_text)
+            st.session_state.characters = extract_characters_fn(book_text)
             if st.session_state.characters:
                 st.session_state.current_character = st.session_state.characters[0]
                 st.success(f"Found {len(st.session_state.characters)} characters")
