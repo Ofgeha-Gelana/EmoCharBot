@@ -10,7 +10,7 @@ from lib.file_processor import extract_text_from_uploaded_file
 load_dotenv()
 
 # Configure Gemini-Pro
-GOOGLE_API_KEY = "AIzaSyAEIalRaXgW3NQsNr-HD7T5DLOCyNuhApc"
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 gen_ai.configure(api_key=GOOGLE_API_KEY)
 model = gen_ai.GenerativeModel('gemini-1.5-flash')
 
