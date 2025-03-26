@@ -1,6 +1,6 @@
 # AI Character Simulator with Emotional Adaptation
 
-![Project Banner](https://via.placeholder.com/1200x400?text=AI+Character+Simulator+with+Emotional+Adaptation)
+<!-- ![Project Banner](https://via.placeholder.com/1200x400?text=AI+Character+Simulator+with+Emotional+Adaptation) -->
 
 A Streamlit application that lets users extract characters from books and chat with them, featuring emotional adaptation based on Dorner's Psi Theory and conversation memory.
 
