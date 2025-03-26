@@ -21,7 +21,7 @@ A Streamlit application that lets users extract characters from books and chat w
 - [Project Structure](#project-structure)
 - [Technical Stack](#technical-stack)
 - [Troubleshooting](#troubleshooting)
-- [License](#license)
+<!-- - [License](#license) -->
 
 ## Installation
 
