@@ -1,10 +1,10 @@
-# AI Character Simulator 🎭
+# AI Character Simulator 
 
 Welcome to the **AI Character Simulator** project, a powerful and interactive tool that allows you to engage in conversations with characters extracted from any text, such as books, stories, or documents! This project uses Streamlit for the frontend, Google's Gemini-Pro for AI-driven character generation, and ChromaDB for efficient conversation storage.
 
 ---
 
-## 🚀 **Project Overview**
+##  **Project Overview**
 
 The **AI Character Simulator** enables users to:
 - Extract and interact with characters from any text (e.g., books, stories, documents).
@@ -13,7 +13,7 @@ The **AI Character Simulator** enables users to:
   
 ---
 
-## 🧑‍💻 **Technologies Used**
+##  **Technologies Used**
 
 - **Streamlit**: Framework for creating interactive web applications.
 - **Google Gemini-Pro**: AI model to generate responses based on character traits and personality.
@@ -22,7 +22,7 @@ The **AI Character Simulator** enables users to:
 
 ---
 
-## 🏗 **Setup Instructions**
+## **Setup Instructions**
 
 ### Prerequisites
 
@@ -66,7 +66,7 @@ The **AI Character Simulator** enables users to:
 
 ---
 
-## 🌟 **Features**
+## **Features**
 
 - **Character Extraction**: 
    - Upload a text document or paste text directly into the app.
@@ -84,7 +84,7 @@ The **AI Character Simulator** enables users to:
    
 ---
 
-## ⚙️ **How to Use**
+##  **How to Use**
 
 1. **Step 1: Extract Characters**
     - Paste the text or upload a file containing the story or content.
@@ -103,5 +103,4 @@ The **AI Character Simulator** enables users to:
 
 ---
 
-## 📦 **Project Structure**
 
